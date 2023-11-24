@@ -9,17 +9,11 @@ export class GithubRelease {
   private cacheUpdatedAt: number | null;
 
   constructor(options: Options) {
-    const { account, repository, token, url } = options;
+    const { account, repository } = options;
     this.options = options;
 
     if (!account || !repository) {
       throw new Error("Neither ACCOUNT, nor REPOSITORY are defined");
-    }
-
-    if (token && !url) {
-      throw new Error(
-        "Neither VERCEL_URL, nor URL are defined, which are mandatory for private repo mode"
-      );
     }
 
     this.cache = [];
@@ -90,6 +84,16 @@ export class GithubRelease {
     return false;
   }
 
+  public async getReleaseList() {
+    const { refreshCache, isOutdated, cacheUpdatedAt } = this;
+
+    if (!cacheUpdatedAt || isOutdated()) {
+      await refreshCache();
+    }
+
+    return this.cache;
+  }
+
   public async getRelease({
     id,
     platform,
@@ -112,4 +116,53 @@ export class GithubRelease {
     });
   }
 
+  public async createRelease({
+    id,
+    platform,
+    releaseName,
+    runtimeVersion,
+    stringManifest,
+  }: GithubReleaseInfoEntity) {
+    const { account, repository, token } = this.options;
+    const repo = account + "/" + repository;
+    const url = `https://api.github.com/repos/${repo}/releases`;
+
+    const headers: HeadersInit = {
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    };
+
+    if (token && typeof token === "string" && token.length > 0) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const tagName = `${platform}@${runtimeVersion}@${releaseName}@${id}`;
+    const body = JSON.stringify({
+      tag_name: tagName,
+      name: tagName,
+      body: stringManifest,
+      draft: false,
+      prerelease: false, // Set to true if it's a pre-release
+    });
+
+    const response = await fetch(url, { method: "POST", headers, body });
+
+    if (response.status !== 201) {
+      throw new Error(
+        `GitHub API responded with ${response.status} for url ${url}`
+      );
+    }
+
+    const createdRelease = await response.json();
+
+    this.cache.push({
+      id,
+      platform,
+      releaseName,
+      runtimeVersion,
+      stringManifest,
+    });
+
+    return createdRelease;
+  }
 }

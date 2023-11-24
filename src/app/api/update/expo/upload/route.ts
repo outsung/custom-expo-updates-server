@@ -57,8 +57,6 @@ export async function POST(request: Request) {
   const metadata = JSON.parse(stringMetadata) as ExpoMetadata;
   const expoClient = JSON.parse(formData.get("expoClient") as string) as object;
 
-  console.log("assetFiles", assetFiles);
-
   const commonManifest = {
     id: hex2UUID(createHash(Buffer.from(stringMetadata), "sha256", "hex")),
     createdAt: new Date().toISOString(),
@@ -71,8 +69,6 @@ export async function POST(request: Request) {
     platform: undefined,
   };
 
-  console.log("create commonManifest", commonManifest);
-
   const platforms: ("ios" | "android")[] = [];
   if (metadata.fileMetadata.ios) {
     platforms.push("ios");
@@ -83,7 +79,6 @@ export async function POST(request: Request) {
 
   const _manifests = await Promise.all(
     platforms.map(async (platform) => {
-      console.log("call platform", platform);
       const existRelease = await githubRelease.getRelease({
         id: commonManifest.id,
         platform,
@@ -91,11 +86,7 @@ export async function POST(request: Request) {
         runtimeVersion,
       });
 
-      console.log("get existRelease", existRelease);
-
       if (!existRelease) {
-        console.log("not have manifest");
-
         const assetsMetadata = [
           { path: metadata.fileMetadata[platform].bundle, ext: undefined },
           ...metadata.fileMetadata[platform].assets,
@@ -135,11 +126,6 @@ export async function POST(request: Request) {
           })
         );
 
-        // upload:  093e04a279071fd59d0580ba91695844 https://qagecrbcwgiki1oi.public.blob.vercel-storage.com/093e04a279071fd59d0580ba91695844 png
-        // upload:  ios-2fe7f14d375cd2e95bb4e6c64c07db43.js https://qagecrbcwgiki1oi.public.blob.vercel-storage.com/ios-2fe7f14d375cd2e95bb4e6c64c07db43.js undefined
-
-        console.log("res", bundle, assets);
-
         return {
           ...commonManifest,
           platform,
@@ -151,6 +137,17 @@ export async function POST(request: Request) {
   );
 
   const manifests = _manifests.filter((manifest) => manifest) as Manifest[];
+  await Promise.all(
+    manifests.map(async (manifest) => {
+      return await githubRelease.createRelease({
+        id: manifest.id,
+        platform: manifest.platform,
+        releaseName: manifest.releaseName,
+        runtimeVersion: manifest.runtimeVersion,
+        stringManifest: JSON.stringify(manifest),
+      });
+    })
+  );
 
   return new Response(undefined, { status: 200 });
 }
