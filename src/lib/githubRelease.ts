@@ -155,7 +155,7 @@ export class GithubRelease {
 
     const createdRelease = await response.json();
 
-    this.cache.push({
+    this.cache.unshift({
       id,
       platform,
       releaseName,

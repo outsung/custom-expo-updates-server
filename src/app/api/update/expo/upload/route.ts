@@ -1,5 +1,6 @@
 import { put } from "@vercel/blob";
 import mime from "mime";
+import { revalidatePath } from "next/cache";
 
 import { createHash, hex2UUID } from "@/lib/crypto";
 import { githubReleaseConnect } from "@/lib/githubReleaseConnect";
@@ -102,7 +103,7 @@ export async function POST(request: Request) {
   );
 
   const manifests = _manifests.filter((manifest) => manifest) as Manifest[];
-  await Promise.all(
+  const res = await Promise.all(
     manifests.map(async (manifest) => {
       return await githubRelease.createRelease({
         id: manifest.id,
@@ -113,6 +114,10 @@ export async function POST(request: Request) {
       });
     })
   );
+
+  if (res.length) {
+    revalidatePath("/");
+  }
 
   return new Response(undefined, { status: 200 });
 }
