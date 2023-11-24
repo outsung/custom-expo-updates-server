@@ -9,13 +9,17 @@ export async function GET(
 ) {
   const { searchParams } = new URL(request.url);
 
-  // request.headers?.runtimeVersion ||
   const releaseName = params.releaseName;
-  const runtimeVersion = searchParams.get("runtimeVersion");
-  const platform = searchParams.get("platform");
+  const runtimeVersion =
+    request.headers.get("expo-runtime-version") ||
+    searchParams.get("runtimeVersion");
+  const platform =
+    request.headers.get("expo-platform") || searchParams.get("platform");
 
   if (!releaseName || !runtimeVersion || !platform) {
-    throw new Error("?");
+    throw new Error(
+      "Missing required parameters. Please provide values for 'releaseName', 'runtimeVersion', and 'platform'."
+    );
   }
 
   const release = await githubReleaseConnect().getRelease({
