@@ -34,9 +34,9 @@ For more details on the code, refer to [custom-expo-updates-client](https://gith
 
 An alternative command to `eas update` (example):
 
-```console
+```sh
 $ npx expo export
-$ ./scripts/upload.sh -d ./dist -v 0.0.1 -r dev ${server}/api/update/expo/upload
+$ ./scripts/upload.sh -d ./dist -v 1.0.0 -r production ${server}/api/update/expo/upload
 ```
 
 Executing the `upload.sh` command will add a new release.

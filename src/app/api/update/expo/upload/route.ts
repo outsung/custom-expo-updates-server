@@ -72,10 +72,14 @@ export async function POST(request: Request) {
               "base64url"
             );
 
-            const { url } = await put(fileName, file, {
-              access: "public",
-              addRandomSuffix: false,
-            });
+            const { url } = await put(
+              asset.ext ? `${fileName}.${asset.ext}` : fileName,
+              file,
+              {
+                access: "public",
+                addRandomSuffix: false,
+              }
+            );
 
             const contentType = asset.ext
               ? mime.getType(asset.ext!)
