@@ -59,3 +59,14 @@ Optional:
 
 - `INTERVAL`: Refreshes the cache every x minutes ([restrictions](https://developer.github.com/changes/2012-10-14-rate-limit-changes/)) (defaults to 15 minutes).
 - `PRE`: If defined with a value of `1`, only pre-releases will be cached.
+
+## Reference
+
+- [https://github.com/expo/custom-expo-updates-server](https://github.com/expo/custom-expo-updates-server)
+- [https://github.com/wogns3623/expo-updates-server](https://github.com/wogns3623/expo-updates-server)
+- [https://github.com/vercel/hazel](https://github.com/vercel/hazel)
+
+## Issues
+
+- Signing for Expo Updates is not yet implemented.
+- Make the use of Vercel Blob Store optional instead of mandatory.

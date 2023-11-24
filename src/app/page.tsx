@@ -60,12 +60,6 @@ export default async function Home() {
           <span>Reference</span>
           <div className="flex flex-col text-sm">
             <a
-              href="https://github.com/vercel/hazel"
-              className="hover:underline"
-            >
-              vercel/<span className="font-extrabold">hazel</span>
-            </a>
-            <a
               href="https://github.com/expo/custom-expo-updates-server"
               className="hover:underline"
             >
@@ -78,6 +72,12 @@ export default async function Home() {
             >
               wogns3623/
               <span className="font-extrabold">expo-updates-server</span>
+            </a>
+            <a
+              href="https://github.com/vercel/hazel"
+              className="hover:underline"
+            >
+              vercel/<span className="font-extrabold">hazel</span>
             </a>
           </div>
         </div>
