@@ -132,7 +132,7 @@ export class GithubRelease {
     releaseName,
     runtimeVersion,
     stringManifest,
-  }: GithubReleaseInfoEntity) {
+  }: Omit<GithubReleaseInfoEntity, "createdAt">) {
     const { account, repository, token } = this.options;
     const repo = account + "/" + repository;
     const url = `https://api.github.com/repos/${repo}/releases`;
