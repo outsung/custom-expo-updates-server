@@ -44,6 +44,9 @@ export async function GET(
     {
       headers: {
         "content-type": `multipart/mixed; boundary=${form.getBoundary()}`,
+        "cache-control": "private, max-age=0",
+        "expo-protocol-version": "0",
+        "expo-sfv-version": "0",
       },
     }
   );
