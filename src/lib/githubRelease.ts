@@ -106,7 +106,10 @@ export class GithubRelease {
     platform,
     releaseName,
     runtimeVersion,
-  }: Omit<GithubReleaseInfoEntity, "stringManifest" | "id"> & { id?: string }) {
+  }: Pick<
+    GithubReleaseInfoEntity,
+    "platform" | "releaseName" | "runtimeVersion"
+  > & { id?: string }) {
     const { refreshCache, isOutdated, cacheUpdatedAt } = this;
 
     if (!cacheUpdatedAt || isOutdated()) {
