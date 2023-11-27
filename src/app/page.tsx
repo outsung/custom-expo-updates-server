@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import { githubReleaseConnect } from "@/lib/githubReleaseConnect";
 import { options } from "@/lib/options";
 
@@ -23,7 +25,7 @@ export default async function Home() {
             className="flex flex-col shadow-lg bg-gray-50 rounded-md py-2 px-4 gap-4"
             key={release.id}
           >
-            <span className=" text-xs text-gray-500">#{release.id}</span>
+            <span className="text-xs text-gray-500">#{release.id}</span>
             <div className="flex flex-col">
               <span>
                 platform:{" "}
@@ -38,6 +40,9 @@ export default async function Home() {
                 <span className="font-semibold">{release.runtimeVersion}</span>
               </span>
             </div>
+            <span className="text-xs text-gray-500">
+              {dayjs(release.createdAt).format("YYYY-MM-DD hh:mm")}
+            </span>
           </a>
         ))}
       </div>

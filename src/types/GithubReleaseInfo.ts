@@ -3,6 +3,7 @@ export interface GithubReleaseInfo {
   prerelease: boolean;
   tag_name: string;
   body: string;
+  published_at: string;
 }
 
 export interface GithubReleaseInfoEntity {
@@ -11,4 +12,5 @@ export interface GithubReleaseInfoEntity {
   runtimeVersion: string;
   platform: string;
   stringManifest: string;
+  createdAt: string;
 }

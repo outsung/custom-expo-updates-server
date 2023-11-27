@@ -56,17 +56,24 @@ export class GithubRelease {
       return;
     }
 
-    this.cache = releases.map((release) => {
-      const [platform, runtimeVersion, releaseName, id] =
-        release.tag_name.split("@");
-      return {
-        id,
-        platform,
-        releaseName,
-        runtimeVersion,
-        stringManifest: release.body,
-      };
-    });
+    this.cache = releases
+      .sort(
+        (a, b) =>
+          new Date(a.published_at).getTime() -
+          new Date(b.published_at).getTime()
+      )
+      .map((release) => {
+        const [platform, runtimeVersion, releaseName, id] =
+          release.tag_name.split("@");
+        return {
+          id,
+          platform,
+          releaseName,
+          runtimeVersion,
+          stringManifest: release.body,
+          createdAt: release.published_at,
+        };
+      });
     this.cacheUpdatedAt = Date.now();
   }
 
@@ -161,6 +168,7 @@ export class GithubRelease {
       releaseName,
       runtimeVersion,
       stringManifest,
+      createdAt: new Date().toString(),
     });
 
     return createdRelease;
