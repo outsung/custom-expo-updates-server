@@ -28,7 +28,10 @@ export class GithubRelease {
     const { account, repository, pre, token } = this.options;
     const repo = account + "/" + repository;
     const url = `https://api.github.com/repos/${repo}/releases?per_page=100`;
-    const headers: HeadersInit = { Accept: "application/vnd.github.preview" };
+    const headers: HeadersInit = {
+      Accept: "application/vnd.github.preview",
+      cache: "no-store",
+    };
 
     if (token && typeof token === "string" && token.length > 0) {
       headers.Authorization = `token ${token}`;
@@ -59,8 +62,8 @@ export class GithubRelease {
     this.cache = releases
       .sort(
         (a, b) =>
-          new Date(a.published_at).getTime() -
-          new Date(b.published_at).getTime()
+          new Date(b.published_at).getTime() -
+          new Date(a.published_at).getTime()
       )
       .map((release) => {
         const [platform, runtimeVersion, releaseName, id] =

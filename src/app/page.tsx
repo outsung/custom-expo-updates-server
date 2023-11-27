@@ -41,7 +41,7 @@ export default async function Home() {
               </span>
             </div>
             <span className="text-xs text-gray-500">
-              {dayjs(release.createdAt).format("YYYY-MM-DD hh:mm")}
+              {dayjs(release.createdAt).format("YYYY-MM-DD HH:mm")}
             </span>
           </a>
         ))}
