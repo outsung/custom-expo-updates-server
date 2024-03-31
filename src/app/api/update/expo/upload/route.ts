@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
         const [bundle, ...assets] = await Promise.all(
           assetsMetadata.map(async (asset) => {
-            const [, fileName] = asset.path.split("/");
+            const fileName = asset.path.split("/").pop() || "";
             const file = assetFileMap.get(fileName);
             if (!file)
               throw new Error(
